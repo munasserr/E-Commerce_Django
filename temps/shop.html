@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+        <!-- Start All Title Box -->
+        <div class="all-title-box">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2>Shop</h2>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                            <li class="breadcrumb-item active">Shop</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End All Title Box -->
+    
+        <!-- Start Shop Page  -->
+        <div class="shop-box-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+                        <div class="product-categori">
+                            <div class="search-product">
+                                <form method = 'POST' action="{% url 'shop' %}">
+                                    {% csrf_token %}
+                                    <input name="name" class="form-control" placeholder="Search here..." type="text">
+                                    <button type="submit" class="hvr-hover"> <i class="fa fa-search"></i> </button>
+                                </form>
+                            </div>
+
+                            <div class="filter-price-left">
+                                <div class="title-left">
+                                    <h3 style="border-bottom: 3px solid black;padding-top:15px; ;">Price</h3>
+                                    <form method="GET" action="{% url 'shop' %}" >
+                                        
+                                        <div style="margin-top: 10px;">
+                                            <label for="from">From</label>
+                                            <input type="number" name="price_from" class="form-control" value="{{price_from}}">
+                                        </div>
+                                        <div>
+                                            <label for="from">To</label>
+                                            <input type="number" name="price_to" class="form-control" value="{{price_to}}">
+                                        </div>
+                                        <button style="margin:15px 0 ; border : 0 ; color: black; " class="form-control btn hvr-hover " type="submit">Filter</button>
+                                    </form>
+                                </div>
+                                <div class="price-box-slider">
+                                </div>
+                            </div>
+
+    
+                        </div>
+                    </div>
+                    <div class="col-xl-9 col-lg-9 col-sm-12 col-xs-12 shop-content-right">
+                        <div class="right-product-box">
+                            <div class="product-item-filter row">
+                                <div class="col-12 col-sm-8 text-center text-sm-left">
+                                    <div class="toolbar-sorter-right">
+                                        <span>Sort by </span>
+                                            <form method="GET" action=" {% url 'shop' %} " style="display: flex; gap:2rem;">
+                                                <select name="sorting" id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
+                                                    <option data-display="Select">Nothing</option>
+                                                    <option value="-data_added" {% if sorting == '-data_added' %} selected {% endif %}>Newest First</option>
+                                                    <option value="price" {% if sorting == 'price' %} selected {% endif %}>Low Price → High Price</option>
+                                                    <option value="-price" {% if sorting == '-price' %} selected {% endif %}>High Price → Low Price</option>
+                                                </select>
+                                                <button type="submit" style="width: 45px;border:0 ; background-color: #d33b33;color: white;cursor: pointer;" class="btn hvr-hover"> <i class=" fa fa-search"></i> </button>
+                                            </form>
+                                        </div>
+                                    <p>Showing all {{prod.count}} results</p>
+                                </div>
+                                <div class="col-12 col-sm-4 text-center text-sm-right">
+                                    <ul class="nav nav-tabs ml-auto">
+                                        <li>
+                                            <a class="nav-link active" href="#grid-view" data-toggle="tab"> <i class="fa fa-th"></i> </a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link" href="#list-view" data-toggle="tab"> <i class="fa fa-list-ul"></i> </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+    
+                            <div class="row product-categorie-box">
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
+                                        <div class="row">
+                                            {% for product in prod  %}
+                                            <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                                                <div class="products-single fix">
+                                                    <div class="box-img-hover">
+                                                        <div class="type-lb">
+                                                            {% if product.type == 'Sale' %}
+                                                            <p class="sale">Sale</p>
+                                                            {% elif product.type == 'New' %}
+                                                            <p class="new">New</p>
+                                                            {% endif %}
+                                                        </div>
+                                                        <img src="{{product.img.url}}" class="img-fluid" alt="Image">
+                                                        <div class="mask-icon">
+                                                            <ul>
+                                                                <li><a href="{% url 'shopdet' product.id %}" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                                                <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
+                                                                <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
+                                                            </ul>
+                                                            <a class="cart addToCartBtn" href="{%url 'add_to_cart' product.id%}">Add to Cart</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="why-text">
+                                                        <h4>{{product.name}}</h4>
+                                                        <h5>{{product.price}}$</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="list-view">
+                                        <div class="list-view-box">
+                                            <div class="row">
+                                                {% for product in prod  %}
+                                                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                                                    <div class="products-single fix">
+                                                        <div class="box-img-hover">
+                                                            <div class="type-lb">
+                                                                {% if product.type == 'Sale' %}
+                                                                <p class="sale">Sale</p>
+                                                                {% elif product.type == 'New' %}
+                                                                <p class="new">New</p>
+                                                                {% endif %}
+                                                            </div>
+                                                            <img src="{{product.img.url}}" class="img-fluid" alt="Image">
+                                                            <div class="mask-icon">
+                                                                <ul>
+                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i class="fas fa-sync-alt"></i></a></li>
+                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6 col-md-6 col-lg-8 col-xl-8">
+                                                    <div class="why-text full-width">
+                                                        <h4>{{product.name}}</h4>
+                                                        <h5>${{product.price}}</h5>
+                                                        <p>Integer tincidunt aliquet nibh vitae dictum. In turpis sapien, imperdiet quis magna nec, iaculis ultrices ante. Integer vitae suscipit nisi. Morbi dignissim risus sit amet orci porta, eget aliquam purus
+                                                            sollicitudin. Cras eu metus felis. Sed arcu arcu, sagittis in blandit eu, imperdiet sit amet eros. Donec accumsan nisi purus, quis euismod ex volutpat in. Vestibulum eleifend eros ac lobortis aliquet.
+                                                            Suspendisse at ipsum vel lacus vehicula blandit et sollicitudin quam. Praesent vulputate semper libero pulvinar consequat. Etiam ut placerat lectus.</p>
+                                                        <a class="btn hvr-hover addToCartBtn" href="#">Add to Cart</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-view-box">
+                                            <div class="row">
+                            {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Shop Page -->
+{% endblock content %}
