@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath project ecommerce.wsgi:application --access-logfile -
+web: gunicorn --pythonpath project djEcomBase.wsgi:application --access-logfile -
