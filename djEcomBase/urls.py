@@ -25,4 +25,4 @@ urlpatterns = [
     path('shop/' , include('shopping_app.urls')),
     # path('checkout/' , include('checkout_app.urls')),
     path('accounts/', include('allauth.urls')),
-] + static(settings.MEDIA_URL , document_root = settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL , document_root = settings.MEDIA_ROOT) + [re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT, }), ]
